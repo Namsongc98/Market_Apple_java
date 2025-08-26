@@ -3,6 +3,7 @@ package com.example.market_apple.Controller;
 import com.example.market_apple.Dto.BaseResponse;
 import com.example.market_apple.Service.CustomerService;
 import com.example.market_apple.Entity.Customer;
+import com.example.market_apple.annotation.NoAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +28,14 @@ public class CustomerController {
     }
 
     @GetMapping("/page")
+    @NoAuth
     public ResponseEntity<BaseResponse<Page<Customer>>> getAllCustomersFollowPage(@PageableDefault(size = 10) Pageable pageable) {
         Page<Customer> customers = customerService.getAllCustomersFollowPage(pageable);
         return ResponseEntity.ok(BaseResponse.success(200,"Get successfully",customers));
     }
     // Lấy danh sách tất cả khách hàng
     @GetMapping
+    @NoAuth
     public ResponseEntity<BaseResponse<List<Customer>>> getAllCustomers() {
         List<Customer> customers = customerService.getAllCustomers();
         return ResponseEntity.ok(BaseResponse.success(200,"Get successfully",customers));
@@ -40,6 +43,7 @@ public class CustomerController {
 
     // Lấy khách hàng theo ID
     @GetMapping("/customer_id/{id}")
+    @NoAuth
     public ResponseEntity<BaseResponse<Customer>> getCustomerById(@PathVariable Long id) {
         Customer customer = customerService.getCustomerById(id);
         return ResponseEntity.ok(BaseResponse.success(200,"Get successfully",customer));

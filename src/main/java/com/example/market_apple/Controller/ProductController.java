@@ -2,6 +2,7 @@ package com.example.market_apple.Controller;
 
 import com.example.market_apple.Service.ProductService;
 import com.example.market_apple.Entity.Product;
+import com.example.market_apple.annotation.NoAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class ProductController {
     }
 
     @GetMapping("/page")
+    @NoAuth
     public ResponseEntity<BaseResponse<Page<Product>>> getAllProductsFollowPage(@PageableDefault(size = 10) Pageable pageable) {
         Page<Product> products = productService.getAllProductsFollowPage(pageable);
         return   ResponseEntity.ok(BaseResponse.success(200, "Get Success", products));
@@ -33,6 +35,7 @@ public class ProductController {
 
     // Lấy danh sách tất cả sản phẩm
     @GetMapping
+    @NoAuth
     public ResponseEntity<BaseResponse<List<Product>>> getAllProducts() {
         List<Product> products = productService.getAllProducts();
         return ResponseEntity.ok(BaseResponse.success(200,"Get Success", products));
@@ -40,6 +43,7 @@ public class ProductController {
 
     // Lấy sản phẩm theo ID
     @GetMapping("/product_id/{id}")
+    @NoAuth
     public ResponseEntity<BaseResponse<Product>> getProductById(@PathVariable Long id) {
         Product product = productService.getProductById(id);
         return ResponseEntity.ok(BaseResponse.success(200, "Get Success", product ));

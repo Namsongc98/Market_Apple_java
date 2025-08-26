@@ -4,6 +4,7 @@ import com.example.market_apple.Dto.BaseResponse;
 import com.example.market_apple.Service.OrderService;
 import com.example.market_apple.Entity.Order;
 import com.example.market_apple.Entity.OrderDetail;
+import com.example.market_apple.annotation.NoAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +28,14 @@ public class OrderController {
     }
 
     @GetMapping("/page")
+    @NoAuth
     public ResponseEntity<BaseResponse<Page<Order>>> getAllOrdersFollowPage(@PageableDefault(size = 10) Pageable pageable) {
         Page<Order> orders = orderService.getAllOrdersFollowPage(pageable);
         return ResponseEntity.ok(BaseResponse.success(200,"Get successfully",orders));
     }
     // Lấy đơn hàng theo ID
     @GetMapping("/order_id/{id}")
+    @NoAuth
     public ResponseEntity<BaseResponse<Order>> getOrderById(@PathVariable Long id) {
         Order order = orderService.getOrderById(id);
         return ResponseEntity.ok(BaseResponse.success(200,"Get successfully",order));
@@ -40,6 +43,7 @@ public class OrderController {
 
     // Lấy danh sách tất cả đơn hàng
     @GetMapping
+    @NoAuth
     public ResponseEntity<BaseResponse<List<Order>>> getAllOrders() {
         List<Order> orders = orderService.getAllOrders();
         return ResponseEntity.ok(BaseResponse.success(200,"Get successfully",orders));

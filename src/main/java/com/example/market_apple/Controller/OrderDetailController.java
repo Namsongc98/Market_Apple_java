@@ -3,6 +3,7 @@ package com.example.market_apple.Controller;
 import com.example.market_apple.Dto.BaseResponse;
 import com.example.market_apple.Service.OrderDetailService;
 import com.example.market_apple.Entity.OrderDetail;
+import com.example.market_apple.annotation.NoAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ public class OrderDetailController {
     }
 
     @GetMapping("/page")
+    @NoAuth
     public ResponseEntity<BaseResponse<Page<OrderDetail>>> getAllOrderDetailsFollowPage(@PageableDefault(size = 10) Pageable pageable) {
         Page<OrderDetail> orderDetails = orderDetailService.getAllOrderDetailsFollowPage(pageable);
         return ResponseEntity.ok(BaseResponse.success(200,"Get Successfully",orderDetails));
@@ -34,6 +36,7 @@ public class OrderDetailController {
 
     // Lấy chi tiết đơn hàng theo ID
     @GetMapping("/order_detail_id/{id}")
+    @NoAuth
     public ResponseEntity<BaseResponse<OrderDetail>> getOrderDetailById(@PathVariable Long id) {
         OrderDetail orderDetail = orderDetailService.getOrderDetailById(id);
         return ResponseEntity.ok(BaseResponse.success(200,"Get Successfully",orderDetail));
@@ -41,6 +44,7 @@ public class OrderDetailController {
 
     // Lấy danh sách tất cả chi tiết đơn hàng
     @GetMapping
+    @NoAuth
     public ResponseEntity<BaseResponse<List<OrderDetail>>> getAllOrderDetails() {
         List<OrderDetail> orderDetails = orderDetailService.getAllOrderDetails();
         return ResponseEntity.ok(BaseResponse.success(200,"Get Successfully",orderDetails));

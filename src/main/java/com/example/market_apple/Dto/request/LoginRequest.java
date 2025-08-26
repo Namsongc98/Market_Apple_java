@@ -1,5 +1,6 @@
 package com.example.market_apple.Dto.request;
 
+import com.example.market_apple.Enum.LoginStatus;
 import lombok.*;
 
 @Getter
@@ -11,4 +12,5 @@ public class LoginRequest {
     private String password;
     private String email;
     private String role;
+    private LoginStatus status;
 }

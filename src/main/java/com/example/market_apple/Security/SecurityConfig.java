@@ -33,7 +33,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // tắt CSRF cho REST API
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // login, register không cần token
+                        .requestMatchers("/api/**").permitAll() // login, register không cần token
                         .anyRequest().authenticated()                // các API khác cần JWT
                 )
                 .exceptionHandling(ex -> ex
