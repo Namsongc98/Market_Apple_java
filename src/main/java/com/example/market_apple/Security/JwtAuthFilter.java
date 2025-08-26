@@ -1,9 +1,12 @@
 package com.example.market_apple.Security;
 
+import com.example.market_apple.Dto.BaseResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -22,6 +25,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     public JwtAuthFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -52,8 +58,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter(request, response);
-        } catch (Exception ex ){
-            throw new AccessDeniedException(ex.getMessage());
+        } catch (AccessDeniedException ex) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter()
+                    .write( mapper.writeValueAsString(
+                            BaseResponse.error(HttpServletResponse.SC_FORBIDDEN, ex.getMessage())));
+        } catch (Exception ex) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter()
+                    .write( mapper.writeValueAsString(
+                            BaseResponse.error(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage())));
         }
 
     }
