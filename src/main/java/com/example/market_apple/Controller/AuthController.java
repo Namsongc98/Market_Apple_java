@@ -40,18 +40,15 @@ public class AuthController {
     @PostMapping("/login")
     @NoAuth
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws MessagingException {
-//        User user = userService.findByEmail(loginRequest.getEmail());
-//        if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-//            return ResponseEntity.badRequest().body("Invalid username or password");
-//        }
-//        emailService.sendLoginNotification(user.getUsername(),user.getEmail(),user.getRole(), user.getStatus());
-//        String accessToken = jwtUtil.generateAccessToken(user.getUsername());
-//        String refreshToken = jwtUtil.generateRefreshToken(user.getUsername());
         TokenResponse token = authService.login(loginRequest.getUsername(), loginRequest.getPassword(),loginRequest.getStatus());
-
         return ResponseEntity.ok(BaseResponse.success(200,"Get successfully",token));
-//        return ResponseEntity.status(HttpStatus.CREATED)
-//                .body(BaseResponse.success(201, "Register successfully", token));
+    }
+
+    @PostMapping("/logout")
+    @NoAuth
+    public ResponseEntity<?> logout(@RequestBody LoginRequest loginRequest) throws MessagingException {
+        User user = authService.logout(loginRequest.getEmail());
+        return ResponseEntity.ok(BaseResponse.success(200,"Logout successfully", null));
     }
 
     // API refresh token
@@ -72,7 +69,7 @@ public class AuthController {
     @PostMapping("/register")
     @NoAuth
     public ResponseEntity<BaseResponse<TokenResponse>> register(@Valid @RequestBody RegisterRequest req) {
-        User user = userService.register(req.getUsername(), req.getPassword(), req.getEmail(), req.getRole());
+        User user = authService.register(req.getUsername(), req.getPassword(), req.getEmail(), req.getRole());
         String accessToken = jwtUtil.generateAccessToken(user.getUsername());
         String refreshToken = jwtUtil.generateRefreshToken(user.getUsername());
         TokenResponse token = new TokenResponse(accessToken, refreshToken);

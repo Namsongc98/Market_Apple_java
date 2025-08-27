@@ -37,12 +37,14 @@ public class AuthServiceImpl implements AuthService {
 
             if (passwordEncoder.matches(password, user.getPassword())) {
                 // gửi mail thông báo login
+                user.setStatus(LoginStatus.ONLINE);
+                User userUpdate = userRepository.updateStatusAndReturn(user.getId(), user.getStatus().name());
                 try {
                     emailService.sendLoginNotification(
-                            user.getUsername(),
-                            user.getEmail(),
-                            user.getRole(),
-                            user.getStatus()
+                            userUpdate.getUsername(),
+                            userUpdate.getEmail(),
+                            userUpdate.getRole(),
+                            userUpdate.getStatus()
                     );
                 } catch (Exception e) {
                     // log lỗi email nhưng không chặn login
@@ -52,29 +54,40 @@ public class AuthServiceImpl implements AuthService {
                 String accessToken = jwtUtil.generateAccessToken(user.getUsername());
                 String refreshToken = jwtUtil.generateRefreshToken(user.getUsername());
 
-                user.setStatus(LoginStatus.ONLINE);
-                userRepository.save(user);
-
                 return new TokenResponse(accessToken, refreshToken);
             } else {
                 user.setStatus(LoginStatus.FAILED);
-                userRepository.save(user);
+               User userUpdate = userRepository.updateStatusAndReturn(user.getId(), user.getStatus().name());
                 throw new RuntimeException("Invalid username or password");
             }
         } catch (Exception e) {
-            System.out.println(e);
-
             // trả JSON error thay vì để Exception bay thẳng ra ngoài
             throw new NoSuchElementException("Login failed: " + e.getMessage());
         }
     }
 
-    public void logout(String username) {
-        User user = userRepository.findByUsername(username)
+    public User logout(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         user.setStatus(LoginStatus.OFFLINE);
-        userRepository.save(user);
+        return userRepository.updateStatusAndReturn(user.getId(), user.getStatus().name());
+    }
+
+    public User register(String username, String rawPassword, String email, String role) {
+        if (userRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+        String finalRole = (role == null || role.isBlank()) ? "ROLE_USER" : role;
+        User user = User.builder()
+                .username(username)
+                .password(passwordEncoder.encode(rawPassword))
+                .email(email)
+                .role(finalRole)
+                .build();
+        return userRepository.save(user);
     }
 
 }

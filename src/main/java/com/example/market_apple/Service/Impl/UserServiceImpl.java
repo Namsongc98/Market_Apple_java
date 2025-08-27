@@ -2,10 +2,13 @@ package com.example.market_apple.Service.Impl;
 
 import com.example.market_apple.Entity.User;
 import com.example.market_apple.Service.UserService;
+import com.example.market_apple.Repository.UserRepository;
+import com.example.market_apple.Enum.LoginStatus;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.market_apple.Repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
@@ -39,21 +42,11 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
-    public User register(String username, String rawPassword, String email, String role) {
-        if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("Username already exists");
-        }
-        if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-        String finalRole = (role == null || role.isBlank()) ? "ROLE_USER" : role;
-        User user = User.builder()
-                .username(username)
-                .password(passwordEncoder.encode(rawPassword))
-                .email(email)
-                .role(finalRole)
-                .build();
-        return userRepository.save(user);
+
+    @Transactional
+    public User updateUserStatus(Long userId, LoginStatus status) {
+        User  user = userRepository.updateStatusAndReturn(userId, status.name());
+        return user;
     }
 
 }
