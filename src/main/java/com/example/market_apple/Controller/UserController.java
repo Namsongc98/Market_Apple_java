@@ -7,10 +7,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.market_apple.Service.ExportUsersToExcel;
+import com.example.market_apple.Service.importExcellService;
 
 import java.io.ByteArrayInputStream;
 
@@ -37,4 +38,14 @@ public class UserController {
                 .body(new InputStreamResource(in));
     }
 
+    @PostMapping("/import")
+    @NoAuth
+    public ResponseEntity<String> importUsersFromExcel (@RequestParam("file") MultipartFile  file){
+        try {
+            importExcellService.importUsersFromExcel(file);
+            return ResponseEntity.ok("Import thành công!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Import thất bại: " + e.getMessage());
+        }
+    }
 }

@@ -1,9 +1,9 @@
 package com.example.market_apple.Controller;
 
 import com.example.market_apple.Dto.BaseResponse;
+import com.example.market_apple.Dto.request.Order.OrderRequest;
 import com.example.market_apple.Service.OrderService;
 import com.example.market_apple.Entity.Order;
-import com.example.market_apple.Entity.OrderDetail;
 import com.example.market_apple.annotation.NoAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,27 +54,6 @@ public class OrderController {
     public ResponseEntity<BaseResponse<String>> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
         return ResponseEntity.ok(BaseResponse.success(200,"Order deleted successfully",null));
-    }
-}
-
-class OrderRequest {
-    private Long customerId;
-    private List<OrderDetail> orderDetails;
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
-    public List<OrderDetail> getOrderDetails() {
-        return orderDetails;
-    }
-
-    public void setOrderDetails(List<OrderDetail> orderDetails) {
-        this.orderDetails = orderDetails;
     }
 }
 
