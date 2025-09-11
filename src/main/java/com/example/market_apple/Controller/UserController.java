@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.market_apple.Service.ExportUsersToExcel;
-import com.example.market_apple.Service.importExcellService;
+import com.example.market_apple.Service.ImportExcellService;
 
 import java.io.ByteArrayInputStream;
 
@@ -20,6 +20,9 @@ import java.io.ByteArrayInputStream;
 public class UserController {
     @Autowired
     private ExportUsersToExcel excelExportService;
+
+    @Autowired
+    private  ImportExcellService importExcellService;
 
     @GetMapping("/export")
     @NoAuth
